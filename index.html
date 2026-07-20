@@ -1,0 +1,216 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Ubuntu Terminal Exam Trainer</title>
+  <link rel="stylesheet" href="css/styles.css" />
+</head>
+<body>
+  <header>
+    <div class="wrap">
+      <h1>🐧 Ubuntu Terminal Exam Trainer</h1>
+      <p>Everything you need to clear the <b>Using Linux Terminal</b> section of the Canonical sysadmin exam.</p>
+      <span class="badge">v1.0.0 · Study · Practice · Test</span>
+    </div>
+  </header>
+
+  <nav class="tabs">
+    <button class="tab active" data-tab="home">Dashboard</button>
+    <button class="tab" data-tab="study">Study</button>
+    <button class="tab" data-tab="cheatsheet">Cheatsheet</button>
+    <button class="tab" data-tab="flashcards">Flashcards</button>
+    <button class="tab" data-tab="quiz">Quiz</button>
+    <button class="tab" data-tab="practice">Terminal Practice</button>
+    <button class="tab" data-tab="exam">Exam Info</button>
+  </nav>
+
+  <main>
+    <!-- Dashboard -->
+    <section class="panel active" id="panel-home">
+      <h2>Your progress</h2>
+      <p class="sub">Track how ready you are across studying, flashcards, and quizzes. Progress is saved in this browser.</p>
+      <div class="stat-grid">
+        <div class="stat">
+          <div class="label">Topics read</div>
+          <div class="value" id="stat-read">0 / 0</div>
+          <div class="bar"><span id="stat-read-bar" style="width:0"></span></div>
+        </div>
+        <div class="stat">
+          <div class="label">Flashcards known</div>
+          <div class="value" id="stat-cards">0 / 0</div>
+          <div class="bar"><span id="stat-cards-bar" style="width:0"></span></div>
+        </div>
+        <div class="stat">
+          <div class="label">Best quiz score</div>
+          <div class="value" id="stat-quiz">—</div>
+          <div class="value"><small id="stat-quiz-sub">0 quizzes taken</small></div>
+        </div>
+      </div>
+
+      <div class="card">
+        <h3>How to use this trainer</h3>
+        <ul class="clean">
+          <li><b>Study</b> — read the notes for all three exam sections; mark topics as you finish.</li>
+          <li><b>Cheatsheet</b> — a searchable command reference for quick lookups.</li>
+          <li><b>Flashcards</b> — flip-card drilling; mark cards Known or Review.</li>
+          <li><b>Quiz</b> — timed-style multiple choice with explanations; aim for 80%+.</li>
+          <li><b>Terminal Practice</b> — a real, simulated shell to run commands safely.</li>
+        </ul>
+      </div>
+
+      <div class="card">
+        <h3>Recent quizzes</h3>
+        <ul class="clean" id="recent-quizzes"></ul>
+        <button class="btn ghost small" id="reset-progress" style="margin-top:12px">Reset all progress</button>
+      </div>
+    </section>
+
+    <!-- Study -->
+    <section class="panel" id="panel-study">
+      <h2>Study notes</h2>
+      <p class="sub">Structured notes for every objective in the exam outline. Click a topic to expand.</p>
+      <div id="study-list"></div>
+    </section>
+
+    <!-- Cheatsheet -->
+    <section class="panel" id="panel-cheatsheet">
+      <h2>Command cheatsheet</h2>
+      <p class="sub">Search by command or description.</p>
+      <div class="toolbar">
+        <input type="search" id="cheat-search" placeholder="Search commands… e.g. chmod, log, ssh" />
+      </div>
+      <div id="cheat-list"></div>
+    </section>
+
+    <!-- Flashcards -->
+    <section class="panel" id="panel-flashcards">
+      <h2>Flashcards</h2>
+      <p class="sub">Click the card to flip. Mark each as Known or Review.</p>
+      <div class="toolbar">
+        <select id="fc-section">
+          <option value="all">All sections</option>
+          <option value="1">1 · Files & Filesystems</option>
+          <option value="2">2 · System Resources</option>
+          <option value="3">3 · Securing Access</option>
+        </select>
+      </div>
+      <div class="fc-wrap">
+        <div class="flashcard" id="flashcard">
+          <div class="fc-inner">
+            <div class="fc-front"></div>
+            <div class="fc-back"></div>
+          </div>
+        </div>
+        <div class="fc-hint">click card to flip</div>
+        <div id="fc-status"></div>
+        <div class="fc-controls">
+          <button class="btn ghost small" id="fc-prev">← Prev</button>
+          <span id="fc-progress" class="mono"></span>
+          <button class="btn ghost small" id="fc-next">Next →</button>
+        </div>
+        <div class="fc-controls">
+          <button class="btn small" id="fc-known">✓ Known</button>
+          <button class="btn ghost small" id="fc-review">↻ Review</button>
+        </div>
+      </div>
+    </section>
+
+    <!-- Quiz -->
+    <section class="panel" id="panel-quiz">
+      <h2>Practice quiz</h2>
+      <p class="sub">Multiple choice with instant feedback and explanations.</p>
+      <div class="card" id="quiz-setup">
+        <div class="toolbar">
+          <select id="quiz-section">
+            <option value="all">All sections</option>
+            <option value="1">Section 1 · Files & Filesystems</option>
+            <option value="2">Section 2 · System Resources</option>
+            <option value="3">Section 3 · Securing Access</option>
+          </select>
+          <select id="quiz-count">
+            <option value="10">10 questions</option>
+            <option value="20">20 questions</option>
+            <option value="0">All questions</option>
+          </select>
+          <button class="btn" id="quiz-start">Start quiz</button>
+        </div>
+      </div>
+      <div class="card" id="quiz-body"></div>
+    </section>
+
+    <!-- Terminal Practice -->
+    <section class="panel" id="panel-practice">
+      <h2>Terminal practice</h2>
+      <p class="sub">A safe, simulated Ubuntu shell. Nothing here touches your real system.</p>
+      <div class="term">
+        <div class="term-bar">
+          <span class="dot r"></span><span class="dot y"></span><span class="dot g"></span>
+          <span class="title">alice@web01: ~</span>
+        </div>
+        <div id="term-output"></div>
+        <div class="term-inputline">
+          <span class="ps">$</span>
+          <input id="term-input" autocomplete="off" spellcheck="false" placeholder="type a command and press Enter" />
+        </div>
+      </div>
+      <div class="chal">
+        <div class="c"><b>Try:</b> <code>ls -la</code> then <code>cd /var/log</code> and <code>cat syslog</code></div>
+        <div class="c"><b>Pipes:</b> <code>cat notes.txt | sort | uniq -c</code></div>
+        <div class="c"><b>grep:</b> <code>grep -i failed /var/log/syslog</code></div>
+        <div class="c"><b>Redirect:</b> <code>echo hello &gt; hi.txt</code> then <code>cat hi.txt</code></div>
+        <div class="c"><b>find:</b> <code>find / -name "*.txt"</code></div>
+        <div class="c"><b>Reset:</b> type <code>reset</code> to restore the filesystem</div>
+      </div>
+    </section>
+
+    <!-- Exam Info -->
+    <section class="panel" id="panel-exam">
+      <h2>Exam outline</h2>
+      <p class="sub">The <b>Using Linux Terminal</b> exam validates your ability to secure, operate, and manage basic system resources. Reference: <a href="https://canonical.com/academy/exam-content" target="_blank" rel="noopener">canonical.com/academy/exam-content</a></p>
+
+      <div class="card">
+        <h3>Section 1 — Navigating Files and Filesystems</h3>
+        <ul class="clean">
+          <li>Navigate and manipulate directories and files with terminal commands</li>
+          <li>Search, compare, and modify files using regular expressions, pipe operators, and redirection</li>
+        </ul>
+      </div>
+      <div class="card">
+        <h3>Section 2 — Managing System Resources</h3>
+        <ul class="clean">
+          <li>Locate system logs and configure log rotation</li>
+          <li>Reconstruct disk partitions and filesystems using <code>fdisk</code>, <code>fsck</code>, <code>parted</code></li>
+          <li>Identify correct crontab format and location</li>
+          <li>Interpret system logs during troubleshooting</li>
+        </ul>
+      </div>
+      <div class="card">
+        <h3>Section 3 — Securing Filesystem Access</h3>
+        <ul class="clean">
+          <li>Create and manage SSH keys</li>
+          <li>Configure system-wide and user-specific security settings</li>
+          <li>Configure password complexity and expiry rules</li>
+          <li>Interpret sudo configuration policies and their security implications</li>
+          <li>Manage user and group accounts, access, and membership</li>
+          <li>Manage directory and file ownership and access</li>
+        </ul>
+        <div class="tip">Note: "Interpret common open-source licenses" is currently in this exam but moves to the <i>Using Desktop</i> exam in the 2026 edition.</div>
+      </div>
+    </section>
+  </main>
+
+  <footer>
+    Ubuntu Terminal Exam Trainer · built for self-study · not affiliated with Canonical
+  </footer>
+
+  <!-- data -->
+  <script src="data/topics.js"></script>
+  <script src="data/quiz.js"></script>
+  <script src="data/flashcards.js"></script>
+  <script src="data/commands.js"></script>
+  <!-- logic -->
+  <script src="js/terminal.js"></script>
+  <script src="js/app.js"></script>
+</body>
+</html>
