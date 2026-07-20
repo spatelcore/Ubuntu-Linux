@@ -253,8 +253,8 @@
       var results = [];
       (function walk(segs) {
         var node = getNode(segs); if (!node) return;
-        var display = start + (segs.length > resolve(start).length ?
-          "/" + segs.slice(resolve(start).length).join("/") : "");
+        var display = (start + (segs.length > resolve(start).length ?
+          "/" + segs.slice(resolve(start).length).join("/") : "")).replace(/\/{2,}/g, "/");
         var name = segs[segs.length - 1] || start;
         if (re.test(name) || (segs.join("/") === resolve(start).join("/") && pattern === "*")) {
           if (segs.join("/") !== resolve(start).join("/")) results.push(display);
