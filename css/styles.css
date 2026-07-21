@@ -189,5 +189,14 @@ input[type=search] { flex: 1; min-width: 200px; }
 .chal .c { background: var(--panel); border: 1px solid var(--line); border-radius: 10px; padding: 12px; font-size: 13.5px; box-shadow: var(--shadow); }
 .chal .c b { color: var(--accent); }
 
-footer { text-align: center; color: var(--muted); font-size: 12px; padding: 20px; }
+footer { text-align: center; color: var(--muted); font-size: 12px; padding: 20px 20px 40px; }
 a { color: var(--accent); }
+
+/* Version tag — fixed bottom-left corner */
+.version-tag {
+  position: fixed; left: 12px; bottom: 12px; z-index: 20;
+  background: var(--panel); color: var(--muted); border: 1px solid var(--line);
+  padding: 3px 9px; border-radius: 20px; font-size: 12px; font-weight: 600;
+  font-family: "SF Mono", "Ubuntu Mono", Menlo, monospace;
+  box-shadow: var(--shadow); pointer-events: none; opacity: .85;
+}
